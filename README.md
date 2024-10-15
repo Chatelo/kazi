@@ -11,9 +11,6 @@ Kazi is a job search management system designed to streamline the process of sea
 
 ### .env
 
-- rename .env.example to .env
-- And provide Redis(`https://cloud.redis.io/`) and upstash(`https://upstash.com/`) varibles.
-
 ### Installation
 
 1. Clone the repository:
@@ -25,6 +22,11 @@ Kazi is a job search management system designed to streamline the process of sea
    cd kazi
    ```
 3. Install dependencies:
+   ```sh
+   pnpm install
+   ```
+4. rename .env.example to .env,
+   And provide Redis(`https://cloud.redis.io/`) and upstash(`https://upstash.com/`) varibles.:
    ```sh
    pnpm install
    ```
