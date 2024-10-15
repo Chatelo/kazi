@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "../../auth/[...nextauth]/options";
 
 export async function GET(
   request: Request,
@@ -37,7 +37,8 @@ export async function PATCH(
 
   try {
     const body = await request.json();
-    const { title, company, location, description, salary, jobType, url } = body;
+    const { title, company, location, description, salary, jobType, url } =
+      body;
 
     const job = await prisma.job.update({
       where: {
