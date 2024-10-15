@@ -27,9 +27,6 @@ Kazi is a job search management system designed to streamline the process of sea
    ```
 4. rename .env.example to .env,
    And provide Redis(`https://cloud.redis.io/`) and upstash(`https://upstash.com/`) varibles.:
-   ```sh
-   pnpm install
-   ```
 
 ### Running the Application
 
