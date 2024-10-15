@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import puppeteer from "puppeteer";
-import cheerio from "cheerio";
+import * as cheerio from "cheerio";
 import robotsParser from "robots-parser";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("query");
   const location = searchParams.get("location");
+
+  console.log("Web jobs API called", { query, location });
 
   if (!query) {
     return new NextResponse("Missing query parameter", { status: 400 });
@@ -17,22 +19,38 @@ export async function GET(request: Request) {
     const page = await browser.newPage();
 
     // Example: Scraping Indeed (replace with actual job board URL)
-    const url = `https://www.indeed.com/jobs?q=${encodeURIComponent(query)}&l=${encodeURIComponent(location || "")}`;
+    const url = `https://www.indeed.com/jobs?q=${encodeURIComponent(
+      query
+    )}&l=${encodeURIComponent(location || "")}`;
+
+    console.log("Fetching URL:", url);
 
     // Check robots.txt
-    const robotsTxt = await fetch("https://www.indeed.com/robots.txt").then(res => res.text());
+    const robotsTxt = await fetch("https://www.indeed.com/robots.txt").then(
+      (res) => res.text()
+    );
     const robots = robotsParser("https://www.indeed.com/robots.txt", robotsTxt);
 
     if (!robots.isAllowed(url)) {
       await browser.close();
-      return new NextResponse("Access to this page is not allowed by robots.txt", { status: 403 });
+      console.log("URL not allowed by robots.txt");
+      return new NextResponse(
+        "Access to this page is not allowed by robots.txt",
+        { status: 403 }
+      );
     }
 
     await page.goto(url, { waitUntil: "networkidle0" });
     const content = await page.content();
-
     const $ = cheerio.load(content);
-    const jobs = [];
+
+    const jobs: {
+      title: string;
+      company: string;
+      location: string;
+      snippet: string;
+      link: string;
+    }[] = [];
 
     // Example: Parse job listings (adjust selectors based on the actual structure)
     $(".jobsearch-ResultsList > div").each((i, el) => {
@@ -46,6 +64,9 @@ export async function GET(request: Request) {
     });
 
     await browser.close();
+
+    console.log(`Found ${jobs.length} jobs`);
+
     return NextResponse.json(jobs);
   } catch (error) {
     console.error("[WEB_JOBS_GET]", error);

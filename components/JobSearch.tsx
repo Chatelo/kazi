@@ -1,18 +1,28 @@
 "use client";
-
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { Switch } from "./ui/switch";
 
 export default function JobSearch() {
-  const [query, setQuery] = useState("");
-  const [location, setLocation] = useState("");
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [query, setQuery] = useState(searchParams.get("query") || "");
+  const [location, setLocation] = useState(searchParams.get("location") || "");
+  const [useWebSearch, setUseWebSearch] = useState(
+    searchParams.get("web") === "true"
+  );
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push(`/?query=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`);
+    const params = new URLSearchParams({
+      query: query,
+      location: location,
+      web: useWebSearch.toString(),
+    });
+    router.push(`/search?${params.toString()}`);
   };
 
   return (
@@ -32,6 +42,16 @@ export default function JobSearch() {
           onChange={(e) => setLocation(e.target.value)}
           className="flex-grow"
         />
+        <div className="flex items-center">
+          <Switch
+            checked={useWebSearch}
+            onCheckedChange={setUseWebSearch}
+            id="web-search"
+          />
+          <label htmlFor="web-search" className="ml-2">
+            Web Search
+          </label>
+        </div>
         <Button type="submit">Search Jobs</Button>
       </div>
     </form>
