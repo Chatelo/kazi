@@ -8,7 +8,7 @@ import { NextAuthProvider } from "@/components/Providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Job Search App",
+  title: "Kazi",
   description: "Find your dream job with our advanced job search application",
 };
 
