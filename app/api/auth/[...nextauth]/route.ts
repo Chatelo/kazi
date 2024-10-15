@@ -1,11 +1,10 @@
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { NextAuthOptions } from "next-auth";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
-import { NextApiHandler } from "next";
-import NextAuth from "next-auth/next";
+import NextAuth from "next-auth";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -57,11 +56,7 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
-// Generate static parameters if required
-export function generateStaticParams() {
-  // If you don't have dynamic routes, return an empty array
-  return [];
-}
 
-const handler: NextApiHandler = NextAuth(authOptions);
+const handler = NextAuth(authOptions);
+
 export { handler as GET, handler as POST };
